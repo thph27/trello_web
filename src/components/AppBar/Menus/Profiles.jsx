@@ -33,7 +33,7 @@ function Profiles () {
         >
           <Avatar sx={{ width: 30, height: 30 }}
             alt="ThangPham"
-            src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-1/241736169_104264748668279_8300534103873335070_n.jpg?stp=cp0_dst-jpg_p60x60&_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFHubivX68kERNjIGBJPPW_hNBPqgKuG2KE0E-qAq4bYhMw_BAbqaQaIsdCxfephfHrg0OkiIcvohYS_KKnIhLq&_nc_ohc=IyyLpjPIjtUAX_ZISyu&_nc_ht=scontent.fhan18-1.fna&oh=00_AfDzQXvLs_p_iLmRUMYs6S36AuZLZP49wwT0MlUl487kfw&oe=661305CE"
+            src="https://scontent.fhan18-1.fna.fbcdn.net/v/t39.30808-1/241736169_104264748668279_8300534103873335070_n.jpg?stp=dst-jpg_s320x320&_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeFHubivX68kERNjIGBJPPW_hNBPqgKuG2KE0E-qAq4bYhMw_BAbqaQaIsdCxfephfHrg0OkiIcvohYS_KKnIhLq&_nc_ohc=GsUPE6Jq7DIAb7H3VZx&_nc_ht=scontent.fhan18-1.fna&oh=00_AfCWTG5i7WKgDd2tKG06mXoJC9ZuQ_ANejbb0pyLLGvkMA&oe=661AB68E"
           />
         </IconButton>
       </Tooltip>
