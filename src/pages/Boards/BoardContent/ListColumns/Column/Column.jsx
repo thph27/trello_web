@@ -16,21 +16,17 @@ import Tooltip from '@mui/material/Tooltip'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddCardIcon from '@mui/icons-material/AddCard'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
-import CardMedia from '@mui/material/CardMedia'
-import GroupIcon from '@mui/icons-material/Group'
-import CommentIcon from '@mui/icons-material/Comment'
-import AttachmentIcon from '@mui/icons-material/Attachment'
 import ListCards from './ListCards/ListCards'
+import { mapOrder } from '~/utils/sorts'
 
 
-function Column() {
+function Column({ column }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
   const handleClick = (event) => {setAnchorEl(event.currentTarget)}
   const handleClose = () => {setAnchorEl(null)}
+  const orderedCards = mapOrder (column?.cards, column?.cardOrderIds, '_id')
+
   return (
     <Box sx={{
       minWidth: '300px',
@@ -55,8 +51,8 @@ function Column() {
           fontSize: '1rem',
           fontWeight: 'bold',
           cursor: 'pointer'
-        }}
-        >Column Title
+        }}>
+          {column?.title}
         </Typography>
         <Box>
           <Tooltip title="More Option">
@@ -106,7 +102,7 @@ function Column() {
         </Box>
       </Box>
       {/* Box List Card */}
-      <ListCards/>
+      <ListCards cards={orderedCards} />
 
       {/* Bix Column Footer */}
       <Box sx={{
