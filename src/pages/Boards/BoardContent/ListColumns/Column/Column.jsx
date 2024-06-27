@@ -24,6 +24,7 @@ import { CSS } from '@dnd-kit/utilities'
 import { Opacity } from '@mui/icons-material'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
+import { toast } from 'react-toastify'
 
 
 function Column({ column }) {
@@ -52,6 +53,7 @@ function Column({ column }) {
   const [newCardTitle, setNewCardTitle] = useState('')
   const addNewCard = () => {
     if (!newCardTitle) {
+      toast.error('Please enter Card title' , { position: 'bottom-right'})
       return
     }
 
