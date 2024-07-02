@@ -8,18 +8,25 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import CloseIcon from '@mui/icons-material/Close'
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   // SortableContext yeu cau item la 1 mang dang ['id-1', 'id-2'] chu k phai la 1 array cua object [ {id: 'id-01'} ]
   const [openNewColumnForm, setOpenNewColumnForm] = useState(false)
+
   const toggleOpenNewColumnForm = () => setOpenNewColumnForm(!openNewColumnForm)
+
   const [newColumnTitle, setNewColumnTitle] = useState('')
-  const addNewColumn = () => {
+
+  const addNewColumn = async () => {
     if (!newColumnTitle) {
       toast.error('Please enter Column title')
       return
     }
+    // Tao du lieu Column de goi API
+    const newColumnData = {
+      title: newColumnTitle
+    }
+    await createNewColumn(newColumnData)
 
-    // Goi API
     // Dong trang thai them column moi & clear input
     toggleOpenNewColumnForm()
     setNewColumnTitle('')
@@ -37,7 +44,7 @@ function ListColumns({ columns }) {
         overflowY: 'hidden',
         '&::-webkit-scrollbar-track' : {m: 2}
       }}>
-        {columns?.map(column => <Column key={column._id} column={column}/> )}
+        {columns?.map(column => <Column key={column._id} column={column} createNewCard={createNewCard} /> )}
 
         {/* Box Add New Column */}
         {!openNewColumnForm
