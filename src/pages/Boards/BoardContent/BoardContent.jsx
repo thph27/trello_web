@@ -26,7 +26,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
   // yeu cau chuot di chuyen 10px moi goi event
   const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -227,13 +227,8 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         const newColumnIndex = orderedColumns.findIndex(c => c._id === over.id)
 
         const dndOrderedColumns = arrayMove (orderedColumns, oldColumnIndex, newColumnIndex)
-        // dung arrayMove cua dnd-kit de sap xep lai mang Columns ban dau
-        // 2 cai console log sau nay de dung xu li goi API
-        // const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
-        // console.log ('dndOrderedColumns: ', dndOrderedColumns)
-        // console.log ('dndOrderedColumnsIds: ', dndOrderedColumnsIds)
-
-        // cap nhat lai state columns ban dau sau khi da keo tha
+        moveColumns(dndOrderedColumns)
+        // cap nhat lai state columns ban dau sau khi da keo tha de tranh delay or flickering
         setOrderedColumns(dndOrderedColumns)
       }
 
