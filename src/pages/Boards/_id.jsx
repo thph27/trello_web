@@ -2,11 +2,19 @@ import Container from '@mui/material/Container'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
+import { mapOrder } from '~/utils/sorts'
 // import { mockData } from '~/apis/mock-data'
 import { useEffect, useState } from 'react'
-import { fetchBoardDetailsAPI, createNewColumnAPI, createNewCardAPI, updateBoardDetailsAPI } from '~/apis'
+import {
+  fetchBoardDetailsAPI,
+  createNewColumnAPI,
+  createNewCardAPI,
+  updateBoardDetailsAPI,
+  updateColumnDetailsAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
+import { Box, Typography } from '@mui/material'
+import CircularProgress from '@mui/material/CircularProgress'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -16,11 +24,16 @@ function Board() {
     const boardId = '667b7c0f2490112fe129ddd9'
     // Call API
     fetchBoardDetailsAPI(boardId).then(board => {
+      // Sap xep thu tu cac column luon o day trc khi truyen du lieu xuong component con
+      board.columns = mapOrder (board.columns, board.columnOrderIds, '_id')
       // Xu li van de keo tha vao 1 column rong sau khi da co API
       board.columns.forEach(column => {
         if (isEmpty(column.cards)) {
           column.cards = [generatePlaceholderCard(column)]
           column.cardOrderIds = [generatePlaceholderCard(column)._id]
+        } else {
+        // Sap xep thu tu cac card luon o day trc khi truyen du lieu xuong component con
+          column.cards = mapOrder (column.cards, column.cardOrderIds, '_id')
         }
       })
       // console.log(board)
@@ -60,7 +73,8 @@ function Board() {
     setBoard(newBoard)
   }
   // Goi API va xu li khi keo tha columns
-  const moveColumns = async(dndOrderedColumns) => {
+  // Khi move column thi chi can goi API de cap nhat mang columnOrderIds cua board
+  const moveColumns = (dndOrderedColumns) => {
     // Cap nhat lai chuan du lieu state board
     const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
     const newBoard = { ...board }
@@ -68,7 +82,36 @@ function Board() {
     newBoard.columnOrderIds = dndOrderedColumnsIds
     setBoard(newBoard)
     //Goi API update board
-    await updateBoardDetailsAPI (newBoard._id, { columnOrderIds: dndOrderedColumnsIds})
+    updateBoardDetailsAPI (newBoard._id, { columnOrderIds: dndOrderedColumnsIds})
+  }
+  // Khi move card trong cung 1 column thi chi can goi API de cap nhat mang cardOrderIds cua Column chua no
+  const moveCardInTheSameColumn = (dndOrderedCards, dndOrderedCardIds, columnId) => {
+    // Cap nhat lai chuan du lieu state board
+    const newBoard = { ...board }
+    const columnToUpdate = newBoard.columns.find(column => column._id === columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards = dndOrderedCards
+      columnToUpdate.cardOrderIds = dndOrderedCardIds
+    }
+    setBoard(newBoard)
+
+    //Goi API update column
+    updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
+  }
+  if (!board) {
+    return (
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+        width: '100vw',
+        height: '100vh'
+      }}>
+        <CircularProgress />
+        <Typography>Loading Board...</Typography>
+      </Box>
+    )
   }
 
   return (
@@ -80,6 +123,7 @@ function Board() {
         createNewColumn = {createNewColumn}
         createNewCard = {createNewCard}
         moveColumns = {moveColumns}
+        moveCardInTheSameColumn ={moveCardInTheSameColumn}
       />
     </Container>
   )
