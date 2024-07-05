@@ -25,7 +25,12 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD: 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInTheSameColumn }) {
+function BoardContent({
+  board,
+  createNewColumn,
+  createNewCard, moveColumns,
+  moveCardInTheSameColumn,
+  moveCardToDifferentColumn }) {
   // yeu cau chuot di chuyen 10px moi goi event
   const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -66,7 +71,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
     over,
     activeColumn,
     activeDraggingCardId,
-    activeDraggingCardData
+    activeDraggingCardData,
+    triggerFrom
   ) => {
     setOrderedColumns(prevColumns => {
       // Tim vi tri cua overCard trong column đích (nơi mà activeCard sắp đc thả)
@@ -113,6 +119,13 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
       // Cap nhat lai mang cardOrderIds
       nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
 
+      if (triggerFrom === 'handleDragEnd') {
+        moveCardToDifferentColumn(activeDraggingCardId,
+          oldColumnWhenDraggingCard._id,
+          nextOverColumn._id,
+          nextColumns
+        )
+      }
       return nextColumns
     })
 
@@ -157,7 +170,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
         over,
         activeColumn,
         activeDraggingCardId,
-        activeDraggingCardData
+        activeDraggingCardData,
+        'handleDragOver'
 
       )
     }
@@ -192,7 +206,8 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
           over,
           activeColumn,
           activeDraggingCardId,
-          activeDraggingCardData
+          activeDraggingCardData,
+          'handleDragEnd'
 
         )
       } else {
