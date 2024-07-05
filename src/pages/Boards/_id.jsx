@@ -10,7 +10,8 @@ import {
   createNewColumnAPI,
   createNewCardAPI,
   updateBoardDetailsAPI,
-  updateColumnDetailsAPI } from '~/apis'
+  updateColumnDetailsAPI,
+  moveCardToDifferentColumnAPI } from '~/apis'
 import { generatePlaceholderCard } from '~/utils/formatters'
 import { isEmpty } from 'lodash'
 import { Box, Typography } from '@mui/material'
@@ -67,8 +68,14 @@ function Board() {
     const newBoard = { ...board }
     const columnToUpdate = newBoard.columns.find(column => column._id === createdCard.columnId)
     if (columnToUpdate) {
-      columnToUpdate.cards.push(createdCard)
-      columnToUpdate.cardOrderIds.push(createdCard._id)
+      // neu co 1 phan tu thi xoa placeholdecard di
+      if (columnToUpdate.cards.some(card => card.FE_PlaceholderCard)) {
+        columnToUpdate.cards = [createdCard]
+        columnToUpdate.cardOrderIds = [createdCard._id]
+      } else { // nguoc lai neu column da co data thi push vao cuoi mang
+        columnToUpdate.cards.push(createdCard)
+        columnToUpdate.cardOrderIds.push(createdCard._id)
+      }
     }
     setBoard(newBoard)
   }
@@ -98,6 +105,30 @@ function Board() {
     //Goi API update column
     updateColumnDetailsAPI(columnId, { cardOrderIds: dndOrderedCardIds })
   }
+  // Khi di chuyen card sang column khac:
+  // B1 : Cap nhat mang cardOrderIds cua column ban dau chua no (xoa id cua card do di)
+  // B2 : Cap nhat mang cardOrderIds cua columnb tiep theo (them id cua card vao)
+  // B3: Cap nhat la columnId cua cai card da keo
+  const moveCardToDifferentColumn = (currentCardId, prevColumnId, nextColumnId, dndOrderedColumns) => {
+    // Cap nhat lai chuan du lieu state board
+    const dndOrderedColumnsIds = dndOrderedColumns.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumns
+    newBoard.columnOrderIds = dndOrderedColumnsIds
+    setBoard(newBoard)
+
+    // Goi API
+    let prevCardOrderIds = dndOrderedColumns.find(c => c._id === prevColumnId)?.cardOrderIds
+    if (prevCardOrderIds[0].includes('placeholder-card')) prevCardOrderIds = []
+
+    moveCardToDifferentColumnAPI({
+      currentCardId,
+      prevColumnId,
+      prevCardOrderIds,
+      nextColumnId,
+      nextCardOrderIds: dndOrderedColumns.find(c => c._id === nextColumnId)?.cardOrderIds
+    })
+  }
   if (!board) {
     return (
       <Box sx={{
@@ -124,6 +155,7 @@ function Board() {
         createNewCard = {createNewCard}
         moveColumns = {moveColumns}
         moveCardInTheSameColumn ={moveCardInTheSameColumn}
+        moveCardToDifferentColumn ={moveCardToDifferentColumn}
       />
     </Container>
   )
