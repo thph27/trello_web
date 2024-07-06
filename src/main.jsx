@@ -6,14 +6,21 @@ import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/s
 import theme from '~/theme'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
+// Cau hinh Mui Dialog
+import { ConfirmProvider } from 'material-ui-confirm'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <CssVarsProvider theme={theme}>
+  // <React.StrictMode>
+  <CssVarsProvider theme={theme}>
+    <ConfirmProvider defaultOptions={{
+      allowClose: false,
+      confirmationButtonProps: {color: 'primary', variant: 'outlined'},
+      cancellationButtonProps: {color: 'inherit'}
+    }}>
       <CssBaseline />
       <App />
       <ToastContainer position='bottom-left' theme='light'/>
-    </CssVarsProvider>
-  </React.StrictMode>
+    </ConfirmProvider>
+  </CssVarsProvider>
+  // </React.StrictMode>
 )
