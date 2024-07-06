@@ -30,7 +30,8 @@ function BoardContent({
   createNewColumn,
   createNewCard, moveColumns,
   moveCardInTheSameColumn,
-  moveCardToDifferentColumn }) {
+  moveCardToDifferentColumn,
+  deleteColumnDetails }) {
   // yeu cau chuot di chuyen 10px moi goi event
   const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 10 } })
 
@@ -320,6 +321,7 @@ function BoardContent({
           columns={orderedColumns}
           createNewColumn={createNewColumn}
           createNewCard={createNewCard}
+          deleteColumnDetails={deleteColumnDetails}
         />
         <DragOverlay dropAnimation={customDropAnimation}>
           {!activeDragItemType && null}
